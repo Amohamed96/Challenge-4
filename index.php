@@ -1,3 +1,8 @@
+<?php
+session_start();
+$isLoggedIn = isset($_SESSION["user"]);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,9 +14,15 @@
 <body>
     <nav>
         <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="info.html">Stats</a></li>
-            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="index.php">Home</a></li>
+            
+            <?php if (!$isLoggedIn): ?>
+                <li><a href="signup.php">Sign Up</a></li>
+                <li><a href="login.php">Login</a></li>
+            <?php else: ?>
+                <li><a href="profile.php">Profile</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php endif; ?>
         </ul>
     </nav>
     
