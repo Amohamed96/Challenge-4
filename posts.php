@@ -7,7 +7,6 @@ $collection = $client->blog->posts;
 
 // Fetch all posts from MongoDB
 $posts = $collection->find([]);
-
 ?>
 
 <!DOCTYPE html>
@@ -18,17 +17,37 @@ $posts = $collection->find([]);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h2>All Blog Posts</h2>
+<nav>
+        <ul>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="posts.php">Posts</a></li>
+            <li><a href="create_post.php">New Post</a></li>
+
+
+            
+            <?php if (!$isLoggedIn): ?>
+                <li><a href="signup.php">Sign Up</a></li>
+                <li><a href="login.php">Login</a></li>
+            <?php else: ?>
+                <li><a href="profile.php">Profile</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+    <h2 style="text-align: center; margin-top: 20px;">📜 All Blog Posts</h2>
     
-    <ul>
+    <div class="posts-container">
         <?php foreach ($posts as $post): ?>
-            <li>
-                <a href="post_details.php?id=<?php echo $post->_id; ?>">
-                    <img src="<?php echo $post->photo; ?>" width="100">
-                    <strong><?php echo $post->title; ?></strong> (<?php echo $post->status; ?>)
-                </a>
-            </li>
+            <div class="post-card">
+                <img src="<?php echo htmlspecialchars($post->photo); ?>" alt="Post Image">
+                <div class="post-content">
+                    <a href="post_details.php?id=<?php echo $post->_id; ?>" class="post-title">
+                        <?php echo htmlspecialchars($post->title); ?>
+                    </a>
+                    <p class="post-status">Status: <?php echo htmlspecialchars($post->status); ?></p>
+                </div>
+            </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
 </body>
 </html>

@@ -16,7 +16,6 @@ if (!isset($_GET['id']) || !preg_match('/^[0-9a-fA-F]{24}$/', $_GET['id'])) {
 $id = new ObjectId($_GET['id']);
 $post = $collection->findOne(['_id' => $id]);
 
-// If no post is found, show an error message
 if (!$post) {
     die("Post not found.");
 }
@@ -24,7 +23,7 @@ if (!$post) {
 // Handle like button
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["like"])) {
     $collection->updateOne(['_id' => $id], ['$inc' => ['likes' => 1]]);
-    header("Refresh:0"); // Reload the page to update the like count
+    header("Refresh:0");
 }
 
 // Handle comment submission
@@ -32,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["comment"])) {
     $comment = trim($_POST["comment_text"]);
     if (!empty($comment)) {
         $collection->updateOne(['_id' => $id], ['$push' => ['comments' => $comment]]);
-        header("Refresh:0"); // Reload the page to show the new comment
+        header("Refresh:0");
     }
 }
 ?>
@@ -45,26 +44,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["comment"])) {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h2><?php echo htmlspecialchars($post->title); ?></h2>
-    <p><strong>Author:</strong> <?php echo htmlspecialchars($post->author); ?></p>
-    <p><strong>Status:</strong> <?php echo htmlspecialchars($post->status); ?></p>
-    <img src="<?php echo htmlspecialchars($post->photo); ?>" width="300">
-    <p><?php echo nl2br(htmlspecialchars($post->description)); ?></p>
-    
-    <form method="POST">
-        <button type="submit" name="like">Like (<?php echo $post->likes ?? 0; ?>)</button>
-    </form>
+<nav>
+        <ul>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="posts.php">Posts</a></li>
+            <li><a href="create_post.php">New Post</a></li>
 
-    <h3>Comments</h3>
-    <ul>
-        <?php foreach ($post->comments ?? [] as $comment): ?>
-            <li><?php echo htmlspecialchars($comment); ?></li>
-        <?php endforeach; ?>
-    </ul>
-    
-    <form method="POST">
-        <textarea name="comment_text" placeholder="Write a comment..." required></textarea>
-        <button type="submit" name="comment">Post Comment</button>
-    </form>
+
+            
+            <?php if (!$isLoggedIn): ?>
+                <li><a href="signup.php">Sign Up</a></li>
+                <li><a href="login.php">Login</a></li>
+            <?php else: ?>
+                <li><a href="profile.php">Profile</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+    <div class="post-container">
+        <h2><?php echo htmlspecialchars($post->title); ?></h2>
+        <p><strong>Author:</strong> <?php echo htmlspecialchars($post->author); ?></p>
+        <p><strong>Status:</strong> <?php echo htmlspecialchars($post->status); ?></p>
+        <img src="<?php echo htmlspecialchars($post->photo); ?>" alt="Post Image">
+        <p><?php echo nl2br(htmlspecialchars($post->description)); ?></p>
+        
+        <form method="POST">
+            <button type="submit" name="like">👍 Like (<?php echo $post->likes ?? 0; ?>)</button>
+        </form>
+
+        <div class="comments-section">
+            <h3>💬 Comments</h3>
+            <ul class="comments-list">
+                <?php foreach ($post->comments ?? [] as $comment): ?>
+                    <li><?php echo htmlspecialchars($comment); ?></li>
+                <?php endforeach; ?>
+            </ul>
+            
+            <form method="POST">
+                <textarea name="comment_text" placeholder="Write a comment..." required></textarea>
+                <button type="submit" name="comment">➕ Post Comment</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

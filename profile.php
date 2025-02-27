@@ -24,6 +24,7 @@ $user = $_SESSION["user"];
         <ul>
             <li><a href="index.php">Home</a></li>
             <li><a href="posts.php">Posts</a></li>
+            <li><a href="create_post.php">New Post</a></li>
             <li><a href="profile.php">Profile</a></li>
             <li><a href="logout.php">Logout</a></li>
         </ul>
