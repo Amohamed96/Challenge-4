@@ -15,6 +15,8 @@ $isLoggedIn = isset($_SESSION["user"]);
     <nav>
         <ul>
             <li><a href="index.php">Home</a></li>
+            <li><a href="posts.php">Posts</a></li>
+
             
             <?php if (!$isLoggedIn): ?>
                 <li><a href="signup.php">Sign Up</a></li>
